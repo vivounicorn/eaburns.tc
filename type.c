@@ -310,7 +310,7 @@ printType(Type * t)
 
     break;
   case CLASS_TYPE:
-    printf(((ClassType *) t)->name);
+    printf("%s", ((ClassType *) t)->name);
     break;
   case FIELD_TYPE:
     printf("Field type");

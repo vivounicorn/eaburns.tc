@@ -1,16 +1,15 @@
 YACC=bison -y
 LEX=flex
-CFLAGS=-g -pipe -W -Wall -Werror #-ansi -pedantic
-LDFLAGS=-g -pipe -W -Wall -Werror #-ansi -pedantic
+CFLAGS=-g -Wall
+LDFLAGS=-g -Wall
 LD=$(CC)
 
 PROGS= \
-	lexdbg \
 	tc \
 	RTS.o
 
 TC_SRC = \
-	scan.c \
+	lex.yy.c \
 	y.tab.c \
 	ast.c \
 	mtrack.c \
@@ -27,17 +26,12 @@ TC_SRC = \
 
 all: $(PROGS)
 
-lexdbg: scan.do literal.o
-	$(LD) $(LDFLAGS) scan.do literal.o -o lexdbg -lfl
-
 tc: $(TC_SRC:.c=.o)
 	$(LD) $(LDFLAGS) $(TC_SRC:.c=.o) -o tc -lfl
 
-scan.o: scan.c
-scan.do: scan.c
-scan.c: scan.l y.tab.h
+yy.lex.o: lex.yy.c
+lex.yy.c: scan.l y.tab.h
 	$(LEX) scan.l
-	mv lex.yy.c scan.c
 
 y.tab.h: y.tab.c
 y.tab.c: parse.y
@@ -49,14 +43,11 @@ y.output: parse.y
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-%.do: %.c
-	$(CC) $(CFLAGS) -DDEBUG -c $< -o $@
-
 depend: scan.c y.tab.c
 	makedepend *.c
 
 clean:
-	rm -f scan.c y.tab.h y.tab.c
+	rm -f lex.yy.c y.tab.h y.tab.c
 	rm -f $(PROGS)
 	rm -f *.o *.do
 	rm -f Makefile.bak

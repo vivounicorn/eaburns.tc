@@ -231,21 +231,3 @@ comment						("//"[^\r\n]*{newline})
 									}
 
 %%
-
-#ifdef DEBUG
-/*
- * These functions are for the stand alone scanning.  Tokens are read and then
- * printed back to the screen.
- */
-int main()
-{
-	while(yylex());
-	return 0;
-}
-
-int display_token(char *p)
-{
-	printf("line %d: %-10.10s is \"%s\"\n", line, p, yytext);
-	return 1;
-}
-#endif /* DEBUG */

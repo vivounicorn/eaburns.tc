@@ -396,7 +396,6 @@ findClassNames(AstNode * n)
 {
   Seq *seq;
   Class *class;
-  // NameId *ident;
   ClassType *class_type;
 
   if (n == NULL)

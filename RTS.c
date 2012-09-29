@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 /* Generic arrayVMT */
 extern volatile void *RTS_arrayVMT;
@@ -22,12 +23,14 @@ RTS_error(const char *msg, unsigned int line)
 
 /* Creates an array given the address of the dimension list. */
 static void*
-RTS_createArrayDimLoc(const unsigned int line, void *baseVMT, const unsigned int rank,
-								unsigned int numDims, int *dims)
+RTS_createArrayDimLoc(const unsigned int line, void *baseVMT,
+						const unsigned int rank,
+						unsigned int numDims,
+						int *dims)
 {
 	int *len;
 	int i;
-	unsigned int *base;
+	uintptr_t *base;
 
 	if(rank == 0) { return NULL; }
 
@@ -40,13 +43,13 @@ RTS_createArrayDimLoc(const unsigned int line, void *baseVMT, const unsigned int
 	base = calloc(1, sizeof(void*) * (*len) + ARRAY_HEADER_LEN);
 	
 	/* Set the header information for the array. */
-	base[0] = (int)&RTS_arrayVMT; /* The array vmt. */
-	base[1] = (int)baseVMT;      /* The base type vmt. */
+	base[0] = (uintptr_t) &RTS_arrayVMT; /* The array vmt. */
+	base[1] = (uintptr_t) baseVMT;      /* The base type vmt. */
 	base[2] = rank;              /* The array rank. */
 	base[3] = *len;              /* The length of the array. */
 
 	for(i = 0; i < *len; i++) {
-		base[i+4]= (int)RTS_createArrayDimLoc(line, baseVMT, rank-1, numDims-1, dims);
+		base[i+4]= (uintptr_t)RTS_createArrayDimLoc(line, baseVMT, rank-1, numDims-1, dims);
 	}
 
 	return base;
@@ -54,7 +57,7 @@ RTS_createArrayDimLoc(const unsigned int line, void *baseVMT, const unsigned int
 
 void*
 RTS_createArray(const unsigned int line, void *baseVMT, const unsigned int rank,
-								unsigned int numDims, ...)
+								int numDims, ...)
 {
 	return RTS_createArrayDimLoc(line, baseVMT, rank, numDims, &numDims+1);
 }

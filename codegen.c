@@ -156,11 +156,7 @@ genIntLit(AstNode *root)
 static void
 genNullLit(AstNode *root)
 {
-  Expr *null;
-
   assert(root->type == NULLLIT_NODE);
-  null = (Expr*)root;
-
   comment_code("Null Literal");
   print_code("\tpushl $0\n");
 }
@@ -460,7 +456,6 @@ genMethDecl(AstNode *root)
 {
   MemberDecl *mdecl;
   MethodType *method_type;
-  ClassType *class_type;
   char *name;
 
   assert(root->type == METHDECL_NODE);
@@ -469,7 +464,6 @@ genMethDecl(AstNode *root)
   assert(mdecl->mtype->super.tag == METHOD_TYPE);
   method_type = mdecl->mtype;
 
-  class_type = getCurClass();
   name = getMungedName(method_type);
 
   comment_code("Method Declaration");
@@ -544,7 +538,6 @@ genConstDecl(AstNode *root)
 {
   MemberDecl *mdecl;
   MethodType *method_type;
-  ClassType *class_type;
   char *name;
 
   assert(root->type == CONSTDECL_NODE);
@@ -553,7 +546,6 @@ genConstDecl(AstNode *root)
   assert(mdecl->mtype->super.tag == CONSTRUCTOR_TYPE);
   method_type = mdecl->mtype;
 
-  class_type = getCurClass();
   name = getMungedName(method_type);
 
   comment_code("Constructor Declaration");

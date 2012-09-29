@@ -15,8 +15,6 @@
 #include "symtab.h"
 #include "class.h"
 
-// #define PRINT_MATCHING_METHODS
-
 /*
  * Set to 1 if we are currently analyzing in a main block. 
  */
@@ -576,7 +574,6 @@ analyzeIntLit(AstNode * n)
 {
   char *newStr;
   IntLit *intlit;
-  long l;
 
   assert(n->type == INTLIT_NODE);
   intlit = (IntLit *) n;
@@ -591,7 +588,7 @@ analyzeIntLit(AstNode * n)
   }
 
   errno = 0;
-  l = strtol(intlit->str, NULL, 10);
+  strtol(intlit->str, NULL, 10);
   if (errno == ERANGE) {
     error("invalid integer literal", &intlit->super.super);
     return n;
